@@ -1,18 +1,21 @@
 <template>
   <div>
-    <appts-container/>
+    <section v-for="(appointment, index) in appointments" :key="index">
+      <appts-container-card :apptData="appointment"/>
+    </section>
+    <button @click="increaseFetch">fetch more</button>
   </div>
 </template>
 
 <script>
-import ApptsContainer from "../components/ApptsContainer";
+import ApptsContainerCard from "../components/ApptsContainerCard";
 export default {
+  name: "Appts",
   components: {
-    ApptsContainer
+    ApptsContainerCard
   },
-  name: "home",
   computed: {
-    appts() {
+    appointments() {
       return this.$store.getters.getAppts;
     },
     apptCount() {
@@ -31,15 +34,5 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.icon-button {
-  background-color: transparent;
-  border-style: none;
-  color: #ababab;
-  outline: none;
-  font-size: 18px;
-  &:hover {
-    color: #7e7e7e;
-  }
-}
+<style scoped lang="scss">
 </style>
