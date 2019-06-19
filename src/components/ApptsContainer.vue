@@ -1,11 +1,6 @@
 <template>
   <div>
-    Today
-    <section v-for="appointment in todayAppts" :key="appointment.id">
-      <appts-container-card :apptData="appointment"/>
-    </section>
-    Tomorrow
-    <section v-for="appointment in upcomingAppts" :key="appointment.id">
+    <section v-for="(appointment, index) in appointments" :key="index">
       <appts-container-card :apptData="appointment"/>
     </section>
     <button @click="increaseFetch">fetch more</button>
@@ -14,9 +9,7 @@
 
 <script>
 import ApptsContainerCard from "../components/ApptsContainerCard";
-import dateMixin from "./../mixins/dateManagement.js"
 export default {
-  mixins:[dateMixin],
   name: "Appts",
   components: {
     ApptsContainerCard
@@ -27,14 +20,6 @@ export default {
     },
     apptCount() {
       return this.$store.getters.getFetchStart;
-    },
-    todayAppts() {
-      return this.todayArr();
-    },
-    upcomingAppts(){
-      console.log(this.upcomingArr());
-      
-      return this.upcomingArr();
     }
   },
   created() {
@@ -44,16 +29,6 @@ export default {
     increaseFetch() {
       this.$store.dispatch("fetchNextTen"),
         this.$store.dispatch("fetchAppts", this.apptCount);
-    },
-    todayArr() {
-      return this.$store.getters.getAppts.filter(
-        appt => this.mixinDayNonOrdinal(appt.appointmentStart) == this.currentDay()
-      );
-    },
-    upcomingArr() {
-      return this.$store.getters.getAppts.filter(
-        appt => this.mixinDayNonOrdinal(appt.appointmentStart) != this.currentDay()
-      );
     }
   }
 };

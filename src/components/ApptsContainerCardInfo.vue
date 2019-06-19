@@ -28,17 +28,15 @@
 </template>
 
 <script>
-import AppButton from "./UI/BaseButton";
+import AppButton from "./UI/AppButton";
 import ApptsContainerCardActions from "./ApptsContainerCardActions";
-import ColoredStatus from "./UI/ColoredStatus";
-import dateMixin from "./../mixins/dateManagement.js";
+import ApptsContainerCardInfoStatusVue from "./ApptsContainerCardInfoStatus.vue";
 
 export default {
-  mixins: [dateMixin],
   components: {
     uiButton: AppButton,
     cardActions: ApptsContainerCardActions,
-    coloredTextStatus: ColoredStatus
+    coloredTextStatus: ApptsContainerCardInfoStatusVue
   },
   props: {
     apptData: {}
@@ -48,16 +46,18 @@ export default {
       return this.apptData.firstName + " " + this.apptData.lastName;
     },
     longMonth() {
-      return this.mixinSubstringDate(this.apptData.appointmentStart).longApptMonth;
+      return this.substringDate(this.apptData.appointmentStart).longApptMonth;
     },
+
     shortMonth() {
-      return this.getDateObj(this.apptData.appointmentStart).shortApptMonth;
+      return this.substringDate(this.apptData.appointmentStart).shortApptMonth;
     },
     dateDay() {
-      return this.getDateObj(this.apptData.appointmentStart).day;
+      return this.substringDate(this.apptData.appointmentStart).day;
+      /*(n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '')*/
     },
     dateTime() {
-      return this.getDateObj(this.apptData.appointmentStart).time;
+      return this.substringDate(this.apptData.appointmentStart).time;
     },
     apptDuration() {
       return (
@@ -69,11 +69,46 @@ export default {
     }
   },
   methods: {
-    getDateObj(apptStart) {
-      return this.mixinSubstringDate(apptStart);
+    substringDate(fullDate) {
+      const monthNamesLong = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      const monthNamesShort = monthNamesLong.map(month =>
+        month.substring(0, 3)
+      );
+      let date = new Date(fullDate);
+      let dateObj = {
+        longApptMonth: monthNamesLong[date.getMonth()],
+        shortApptMonth: monthNamesShort[date.getMonth()],
+        day: ("0" + date.getDate()).slice(-2),
+        time:
+          Math.abs(date.getHours() - 12) +
+          ":" +
+          ("0" + date.getMinutes()).slice(-2) +
+          " " +
+          (date.getHours() < 12 ? "AM" : "PM")
+      };
+      return dateObj;
     },
-    duration(apptStart, apptEnd) {
-      return this.durationMixin(apptStart, apptEnd);
+    duration(start, end) {
+      let apptStart = new Date(start);
+      let apptEnd = new Date(end);
+
+      let x = apptStart.getHours() * 60 + apptStart.getMinutes();
+      let y = apptEnd.getHours() * 60 + apptEnd.getMinutes();
+
+      return y - x;
     }
   }
 };
@@ -93,9 +128,9 @@ export default {
   &__apptItem {
     display: flex;
     flex-flow: row nowrap;
-    width: 68%;
+    width: 72%;
     &--timeInfo {
-      width: 32%;
+      width: 28%;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -150,6 +185,7 @@ export default {
 
 @media (min-width: $tablet-mq) {
   .single-appt {
+    width: 60%;
     &__apptItem {
       &--attendeeInfo {
         width: 70%;
