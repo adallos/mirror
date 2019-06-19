@@ -1,16 +1,16 @@
 <template>
   <div class="buttonsContainer">
     <div v-for="button in buttonsRendering()" :key="button">
-      <ui-button :buttonType="button"/>
+      <base-button :buttonType="button"/>
     </div>
   </div>
 </template>
 
 <script>
-import AppButton from "./UI/AppButton";
+import BaseButton from "./UI/BaseButton";
 export default {
   components: {
-    uiButton: AppButton
+    BaseButton
   },
   props: ["apptState"],
   methods: {

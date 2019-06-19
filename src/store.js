@@ -8,7 +8,7 @@ export default new Vuex.Store({
     state: {
         appts: [],
         nextTenAppts: [],
-        fetchStart: 10,
+        fetchStart: 20,
         selectedAppt: ''
     },
     getters: {
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     },
     mutations: {
         increaseFetchLimit(state) {
-            return state.fetchStart += 10
+            return state.fetchStart += 20
         },
         setAppts(state, appts) {
             return state.appts = appts
@@ -52,7 +52,6 @@ export default new Vuex.Store({
                         appt.id = document.id;
                         nextTenAppts.push(appt)
                     })
-                    console.log(lastVisible);
                 })
             commit('setAppts', nextTenAppts)
 
